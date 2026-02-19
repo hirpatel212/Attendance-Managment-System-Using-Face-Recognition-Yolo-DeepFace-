@@ -6,9 +6,9 @@ import tkinter
 import os
 from time import strftime
 from datetime import datetime
-from student import Student
-from train import Train
-from face_recognition import Face_Recognition
+from student_yolo import Student
+from train_yolo_deepface import Train
+from face_recognition_yolo_deepface import Face_Recognition
 from attendance import Attendance
 from developer import Developer
 from help import Help

@@ -4,15 +4,15 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import mysql.connector 
 import cv2
-
-
+import os
+from ultralytics import YOLO
+from db_config import get_connection
 
 class Student:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1530x790+0+0")
         self.root.title("Face Recognition System")
-
 
         #===========variables==============
         self.var_dep=StringVar()
@@ -30,8 +30,6 @@ class Student:
         self.var_address=StringVar()
         self.var_teacher=StringVar()
         self.var_radio1=StringVar()
-      
-
 
         # First image
         img = Image.open("images/faceimg3.png").resize((520, 130), Image.LANCZOS)
@@ -64,7 +62,6 @@ class Student:
         main_frame = Frame(bg_img, bd=2, bg="white")
         main_frame.place(x=0, y=40, width=1530, height=910)
 
-
         # left label frame 
         Left_frame = LabelFrame(main_frame, bd=2, bg="white", relief=RIDGE, text="Student Details", font=("times new roman", 15, "bold"))
         Left_frame.place(x=10, y=10, width=730, height=600)
@@ -73,7 +70,6 @@ class Student:
         self.photoimg_left = ImageTk.PhotoImage(img_left)
         f_lbl1 = Label(Left_frame, image=self.photoimg_left)
         f_lbl1.place(x=5, y=0, width=715, height=130)
-
 
         # current course 
         current_course_frame = LabelFrame(Left_frame, bd=2, bg="white", relief=RIDGE, text="Current Course", font=("times new roman", 13, "bold"))
@@ -115,7 +111,6 @@ class Student:
         semester_combo.current(0)
         semester_combo.grid(row=1, column=3, padx=2, pady=10, sticky=W)
 
-
          # class student Information 
         class_student_frame = LabelFrame(Left_frame, bd=2, bg="white", relief=RIDGE, text="Class Student Information", font=("times new roman", 13, "bold"))
         class_student_frame.place(x=5, y=250, width=715, height=300)
@@ -142,7 +137,6 @@ class Student:
         div_combo.grid(row=1, column=1, padx=2, pady=5, sticky=W)
         div_combo["values"] = ("Select Division", "A", "B", "C")
         div_combo.current(0)
-        
 
         #Roll number s
         roll_no_label = Label( class_student_frame, bg="white", text="Roll no :", font=("times new roman", 13, "bold"))
@@ -159,7 +153,6 @@ class Student:
         gender_combo.grid(row=2, column=1, padx=2, pady=5, sticky=W)
         gender_combo["values"] = ("Select Gender", "Male", "Female", "Others")
         gender_combo.current(0)
-        
 
         #DOB
         dob_label = Label( class_student_frame, bg="white", text="DOB :", font=("times new roman", 13, "bold"))
@@ -197,7 +190,6 @@ class Student:
         teacher_entry.grid(row=4, column=3, padx=10, pady=5,  sticky=W)
 
         # radio  butttons
-       
         radiobtn1 = ttk.Radiobutton(class_student_frame,variable=self.var_radio1, text="Take Photo Sample", value="Yes")
         radiobtn1.grid(row=7, column=0)
 
@@ -205,7 +197,6 @@ class Student:
         radiobtn2.grid(row=7, column=1)
 
         # buttons frame 
-        
         btn_frame = Frame(class_student_frame, bd=2, relief=RIDGE, bg="white")
         btn_frame.place(x=0, y=200, width=705, height=35)
 
@@ -231,7 +222,6 @@ class Student:
         update_photo_btn=Button(btn_frame1,text="Update Photo button",width=34,font=("times new roman", 13, "bold"),bg="blue",fg="white")
         update_photo_btn.grid(row=1,column=1)
 
-        
         # right label frame 
         Right_frame = LabelFrame(main_frame, bd=2, bg="white", relief=RIDGE, text="Student Details", font=("times new roman", 15, "bold"))
         Right_frame.place(x=750, y=10, width=750, height=600)
@@ -309,44 +299,37 @@ class Student:
         self.student_table.column("teacher",width=100)
         self.student_table.column("photo",width=100)
 
-
         self.student_table.pack(fill=BOTH,expand=1)
-        self.student_table.bind("<ButtonRelease>", self.get_cursor)                    #binding get cursor in this table
+        self.student_table.bind("<ButtonRelease>", self.get_cursor)
         self.fetch_data()
 
 
-#==================function decration=================
+    #==================function decration=================
 
     def add_data(self):
         if self.var_dep.get()=="Select Department" or self.var_student_name.get()=="" or self.var_std_id.get()=="":
             messagebox.showerror("Error","All Fields are required",parent=self.root)
         else:
-            messagebox.showinfo("Success","Welcome Students ")
-
             try:   
-              
-                conn=mysql.connector.connect(host="localhost",username="root",password="abcd1234",database="face_recognizer")            
+                conn=get_connection()            
                 my_cursor=conn.cursor()
                 my_cursor.execute("insert into student values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
-    
-                                                                                                            self.var_dep.get(),
-                                                                                                            self.var_subject.get(),
-                                                                                                            self.var_year.get(),
-                                                                                                            self.var_semester.get(),
-                                                                                                            self.var_std_id.get(),
-                                                                                                            self.var_student_name.get(),
-                                                                                                            self.var_div.get(),
-                                                                                                            self.var_roll.get(),
-                                                                                                            self.var_gender.get(),
-                                                                                                            self.var_dob.get(),
-                                                                                                            self.var_email.get(),
-                                                                                                            self.var_phone.get(),
-                                                                                                            self.var_address.get(),
-                                                                                                            self.var_teacher.get(),
-                                                                                                            self.var_radio1.get()
-                                                                                                        
-                                                                                                            
-                                                                                                        ))
+                    self.var_dep.get(),
+                    self.var_subject.get(),
+                    self.var_year.get(),
+                    self.var_semester.get(),
+                    self.var_std_id.get(),
+                    self.var_student_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_radio1.get()
+                ))
                 conn.commit()
                 self.fetch_data()
                 conn.close()
@@ -354,14 +337,11 @@ class Student:
             except Exception as es:
                 messagebox.showerror("Error",f"Due to :{str(es)}",parent=self.root)
 
-    
-    # ============== Fetch data =================
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="abcd1234",database="face_recognizer")
+        conn=get_connection()
         my_cursor=conn.cursor()
         my_cursor.execute("select * from student")
         data = my_cursor.fetchall()
-
         if len(data) != 0:
             self.student_table.delete(*self.student_table.get_children())
             for i in data:
@@ -369,14 +349,10 @@ class Student:
             conn.commit()
         conn.close()
 
-
-    # =============== get cursor ================ this is for when we select data it will fill data in student details for update process
-
     def get_cursor(self, event=""):
         cursor_focus=self.student_table.focus()
         content=self.student_table.item(cursor_focus)
         data=content["values"]
-
         self.var_dep.set(data[0]),
         self.var_subject.set(data[1]),
         self.var_year.set(data[2]),
@@ -393,7 +369,6 @@ class Student:
         self.var_teacher.set(data[13]),
         self.var_radio1.set(data[14]),
 
-    # ================ update function ============
 
     def update_data(self):
         if self.var_dep.get()=="Select Department" or self.var_student_name.get()=="" or self.var_std_id.get()=="":
@@ -402,31 +377,29 @@ class Student:
             try:
                 Update= messagebox.askyesno("Update","Do you want to update this student details", parent=self.root)
                 if Update>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="abcd1234",database="face_recognizer")            
+                    conn=get_connection()            
                     my_cursor=conn.cursor()
                     my_cursor.execute("""UPDATE student SET Dep=%s, Subject=%s, Year=%s, Semester=%s, Student_id=%s, Name=%s, Division=%s, Roll=%s, Gender=%s, DOB=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, Photosample=%s WHERE Student_id=%s""",(
-
-                                                                                                                                                                                                                        self.var_dep.get(),
-                                                                                                                                                                                                                        self.var_subject.get(),
-                                                                                                                                                                                                                        self.var_year.get(),
-                                                                                                                                                                                                                        self.var_semester.get(),
-                                                                                                                                                                                                                        self.var_std_id.get(),
-                                                                                                                                                                                                                        self.var_student_name.get(),
-                                                                                                                                                                                                                        self.var_div.get(),
-                                                                                                                                                                                                                        self.var_roll.get(),
-                                                                                                                                                                                                                        self.var_gender.get(),
-                                                                                                                                                                                                                        self.var_dob.get(),
-                                                                                                                                                                                                                        self.var_email.get(),
-                                                                                                                                                                                                                        self.var_phone.get(),
-                                                                                                                                                                                                                        self.var_address.get(),
-                                                                                                                                                                                                                        self.var_teacher.get(),
-                                                                                                                                                                                                                        self.var_radio1.get(),
-                                                                                                                                                                                                                        self.var_std_id.get()
-                                                                                                                                                                                                                    ))
+                        self.var_dep.get(),
+                        self.var_subject.get(),
+                        self.var_year.get(),
+                        self.var_semester.get(),
+                        self.var_std_id.get(),
+                        self.var_student_name.get(),
+                        self.var_div.get(),
+                        self.var_roll.get(),
+                        self.var_gender.get(),
+                        self.var_dob.get(),
+                        self.var_email.get(),
+                        self.var_phone.get(),
+                        self.var_address.get(),
+                        self.var_teacher.get(),
+                        self.var_radio1.get(),
+                        self.var_std_id.get()
+                    ))
                 else:
                     if not Update:
                         return
-
                 messagebox.showinfo("Success", "Student details successfully updated ", parent=self.root) 
                 conn.commit()
                 self.fetch_data()
@@ -434,8 +407,6 @@ class Student:
             except Exception as es:
                 messagebox.showerror("Error",f"Due to :{str(es)}",parent=self.root)
 
-    # =============== delete function ================
-    
     def delete_data(self):
         if self.var_std_id.get()=="":
             messagebox.showerror("Error", "Student ID must be required", parent=self.root)
@@ -443,7 +414,7 @@ class Student:
             try:
                 Delete = messagebox.askyesno("Student Delete Page","Do you want to delete this student", parent=self.root)
                 if Delete>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="abcd1234",database="face_recognizer")            
+                    conn=get_connection()            
                     my_cursor=conn.cursor()
                     sql = "DELETE FROM student WHERE Student_id=%s"
                     val = (self.var_std_id.get(),)
@@ -458,7 +429,7 @@ class Student:
             except Exception as es:
                 messagebox.showerror("Error",f"Due to :{str(es)}",parent=self.root)
 
-    # ========== reset function ==============
+
     def reset_data(self):
         self.var_dep.set("Select Department"),
         self.var_subject.set("Select Subject"),
@@ -476,15 +447,14 @@ class Student:
         self.var_teacher.set(""),
         self.var_radio1.set("")
 
-
-    #================= GEnerate dataset or Take photo samples ======================
+    #================= Generate dataset with YOLO ======================
 
     def generate_dataset(self):
         if self.var_dep.get()=="Select Department" or self.var_student_name.get()=="" or self.var_std_id.get()=="":
             messagebox.showerror("Error","All Fields are required",parent=self.root)
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="abcd1234",database="face_recognizer")            
+                conn=get_connection()            
                 my_cursor=conn.cursor()
                 my_cursor.execute("SELECT * FROM student")
                 myresult = my_cursor.fetchall()
@@ -492,68 +462,79 @@ class Student:
                 for x in myresult:
                     id +=1
                 my_cursor.execute("""UPDATE student SET Dep=%s, Subject=%s, Year=%s, Semester=%s, Student_id=%s, Name=%s, Division=%s, Roll=%s, Gender=%s, DOB=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, Photosample=%s WHERE Student_id=%s""",(
-
-                                                                                                                                                                                                                        self.var_dep.get(),
-                                                                                                                                                                                                                        self.var_subject.get(),
-                                                                                                                                                                                                                        self.var_year.get(),
-                                                                                                                                                                                                                        self.var_semester.get(),
-                                                                                                                                                                                                                        self.var_std_id.get(),
-                                                                                                                                                                                                                        self.var_student_name.get(),
-                                                                                                                                                                                                                        self.var_div.get(),
-                                                                                                                                                                                                                        self.var_roll.get(),
-                                                                                                                                                                                                                        self.var_gender.get(),
-                                                                                                                                                                                                                        self.var_dob.get(),
-                                                                                                                                                                                                                        self.var_email.get(),
-                                                                                                                                                                                                                        self.var_phone.get(),
-                                                                                                                                                                                                                        self.var_address.get(),
-                                                                                                                                                                                                                        self.var_teacher.get(),
-                                                                                                                                                                                                                        self.var_radio1.get(),
-                                                                                                                                                                                                                        self.var_std_id.get() == id+1
-                                                                                                                                                                                                                    ))
+                    self.var_dep.get(),
+                    self.var_subject.get(),
+                    self.var_semester.get(),
+                    self.var_year.get(),
+                    self.var_std_id.get(),
+                    self.var_student_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_radio1.get(),
+                    self.var_std_id.get() == id+1
+                ))
                 
                 conn.commit()
                 self.fetch_data()
                 self.reset_data()
                 conn.close()
 
-                # ============= load predefined data on face frontals from opencv ==============
+                # Load YOLO model for face detection
+                try:
+                    yolo_model = YOLO('yolov8n-face.pt')
+                except:
+                    yolo_model = YOLO('yolov8n.pt')
+                    messagebox.showinfo("Info", "Using general YOLO. For better results, download yolov8n-face.pt")
 
-                face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-
-                def face_cropped(img):
-                    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                    faces = face_classifier.detectMultiScale(gray, 1.3, 5)  
-                    # scaling factor = 1.3
-                    # minimum neighbor = 5
-
-                    for(x, y, w, h) in faces:
-                        face_cropped = img[y:y+h, x:x+w]
-                        return face_cropped
-                
                 cap = cv2.VideoCapture(0)
                 img_id = 0
 
                 while True:
                     ret, my_frame = cap.read()
-                    if face_cropped(my_frame) is not None:
-                        img_id += 1
-                        face = cv2.resize(face_cropped(my_frame),(450,450))
-                        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                        file_name_path = "data/user."+str(id)+"."+str(img_id)+".jpg"
-                        cv2.imwrite(file_name_path, face)
-                        cv2.putText(face, str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)
-                        cv2.imshow("Cropped face", face)
-
-                    if cv2.waitKey(1)==13 or int(img_id) == 300:
+                    if not ret:
                         break
+                    
+                    # Detect faces using YOLO
+                    results = yolo_model(my_frame, conf=0.5, verbose=False)
+                    
+                    for result in results:
+                        boxes = result.boxes
+                        for box in boxes:
+                            # Get bounding box coordinates
+                            x1, y1, x2, y2 = map(int, box.xyxy[0])
+                            
+                            # Extract and save face
+                            face_cropped = my_frame[y1:y2, x1:x2]
+                            
+                            if face_cropped.size > 0:
+                                img_id += 1
+                                face = cv2.resize(face_cropped, (450, 450))
+                                face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+                                file_name_path = f"data/user.{id}.{img_id}.jpg"
+                                cv2.imwrite(file_name_path, face_gray)
+                                
+                                # Display with counter
+                                cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
+                                cv2.rectangle(my_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                                cv2.putText(my_frame, f"Captured: {img_id}/300", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    
+                    cv2.imshow("YOLO Face Capture", my_frame)
+
+                    if cv2.waitKey(1) == 13 or int(img_id) == 300:
+                        break
+                        
                 cap.release()
                 cv2.destroyAllWindows()
-                messagebox.showinfo("Result","Generating data sets completed. ")
+                messagebox.showinfo("Result", f"Dataset generation completed! Captured {img_id} images.")
+                
             except Exception as es:
-                messagebox.showerror("Error",f"Due to :{str(es)}",parent=self.root)
-
-
-
+                messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root)
 
 if __name__ == "__main__":
     root = Tk()

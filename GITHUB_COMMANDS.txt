@@ -1,0 +1,138 @@
+========================================
+GITHUB UPLOAD - QUICK COMMANDS
+========================================
+
+STEP-BY-STEP COMMANDS:
+======================
+
+1. OPEN TERMINAL IN PROJECT FOLDER
+   (Right-click folder → Open in Terminal)
+
+2. INITIALIZE GIT (if not done)
+   git init
+
+3. ADD REMOTE REPOSITORY
+   git remote add origin https://github.com/YOUR_USERNAME/Attendance-Managment-System-Using-Face-Recognition-Yolo-DeepFace.git
+
+4. CHECK STATUS
+   git status
+
+5. ADD ALL FILES
+   git add .
+
+6. COMMIT
+   git commit -m "Initial commit: Face Recognition Attendance System"
+
+7. SET BRANCH NAME
+   git branch -M main
+
+8. PULL EXISTING (if any)
+   git pull origin main --allow-unrelated-histories
+
+9. PUSH TO GITHUB
+   git push -u origin main
+
+
+COPY-PASTE ALL AT ONCE:
+========================
+
+git init
+git remote add origin https://github.com/YOUR_USERNAME/Attendance-Managment-System-Using-Face-Recognition-Yolo-DeepFace.git
+git add .
+git commit -m "Initial commit: Face Recognition Attendance System with YOLO + DeepFace"
+git branch -M main
+git pull origin main --allow-unrelated-histories
+git push -u origin main
+
+
+IF REMOTE ALREADY EXISTS:
+==========================
+
+git remote remove origin
+git remote add origin https://github.com/YOUR_USERNAME/Attendance-Managment-System-Using-Face-Recognition-Yolo-DeepFace.git
+git add .
+git commit -m "Update: Complete system with documentation"
+git push -u origin main
+
+
+FUTURE UPDATES:
+===============
+
+git add .
+git commit -m "Update: description of changes"
+git push
+
+
+VERIFY UPLOAD:
+==============
+
+Go to: https://github.com/YOUR_USERNAME/Attendance-Managment-System-Using-Face-Recognition-Yolo-DeepFace
+
+
+IMPORTANT:
+==========
+
+✓ .gitignore file created (excludes sensitive files)
+✓ db_config_example.py created (template for users)
+✓ db_config.py will NOT be uploaded (in .gitignore)
+✓ data/ folder will NOT be uploaded (privacy)
+✓ Large .pt and .pkl files will NOT be uploaded
+
+
+FILES THAT WILL BE UPLOADED:
+=============================
+
+✓ All .py files (except db_config.py)
+✓ README.md
+✓ requirements.txt
+✓ .gitignore
+✓ db_config_example.py
+✓ All documentation (.md files)
+✓ images/ folder
+✓ GITHUB_UPLOAD_GUIDE.md
+✓ SETUP_INSTRUCTIONS.md
+
+
+FILES THAT WON'T BE UPLOADED:
+==============================
+
+✗ db_config.py (password)
+✗ data/ folder (student photos)
+✗ *.pkl files (trained models)
+✗ *.pt files (YOLO models)
+✗ hmv.csv (attendance records)
+✗ __pycache__/ (Python cache)
+
+
+REPLACE YOUR_USERNAME:
+======================
+
+Replace YOUR_USERNAME with your actual GitHub username in all commands!
+
+Example:
+If your username is "john123", use:
+https://github.com/john123/Attendance-Managment-System-Using-Face-Recognition-Yolo-DeepFace.git
+
+
+TROUBLESHOOTING:
+================
+
+Error: "remote origin already exists"
+→ git remote remove origin
+→ Then add again
+
+Error: "failed to push"
+→ git pull origin main --rebase
+→ git push origin main
+
+Error: "authentication failed"
+→ Use Personal Access Token as password
+→ GitHub Settings → Developer settings → Tokens
+
+
+========================================
+READY TO UPLOAD!
+========================================
+
+Just run the commands above and your project
+will be uploaded to GitHub!

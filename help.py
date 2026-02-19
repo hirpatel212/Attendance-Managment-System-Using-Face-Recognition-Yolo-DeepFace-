@@ -38,13 +38,13 @@ class Help:
         dev_label=Label(main_frame,text="Reach us on: ",font=("times new roman",20,"bold"),bg="aliceblue")
         dev_label.place(x=680,y=10)
 
-        dev_label=Label(main_frame,text="Name:          Vyom Patel                                            Hir Patel                                          Meet Chheta ",font=("times new roman",20,"bold"),bg="aliceblue")
+        dev_label=Label(main_frame,text="Name: Hir Patel                                           ",font=("times new roman",20,"bold"),bg="aliceblue")
         dev_label.place(x=120,y=50)
 
-        dev_label=Label(main_frame,text="Email: 12202120601061@adit.ac.in          12202120601022@adit.ac.in            12202120601032@adit.ac.in ",font=("times new roman",20,"bold"),bg="aliceblue")
+        dev_label=Label(main_frame,text="Email: 12202120601022@adit.ac.in             ",font=("times new roman",20,"bold"),bg="aliceblue")
         dev_label.place(x=120,y=90)
 
-        dev_label=Label(main_frame,text="Contact:       814053747                                            9925166734                                       9998073685 ",font=("times new roman",20,"bold"),bg="aliceblue")
+        dev_label=Label(main_frame,text="Contact: 9925166734                                       ",font=("times new roman",20,"bold"),bg="aliceblue")
         dev_label.place(x=120,y=130)
 
 
