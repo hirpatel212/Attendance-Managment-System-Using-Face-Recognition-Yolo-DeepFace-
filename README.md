@@ -2,6 +2,7 @@
 
 Advanced face recognition attendance system using YOLO for detection and DeepFace for recognition with 95-98% accuracy.
 
+<<<<<<< HEAD
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-green.svg)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.12+-orange.svg)
@@ -455,3 +456,4 @@ For best results, follow the tips in `QUICK_START.md` and `RECOGNITION_TROUBLESH
 
 
                                                                                 ------------ HIR PATEL❤️
+=======
