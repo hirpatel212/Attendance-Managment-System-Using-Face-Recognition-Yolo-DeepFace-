@@ -65,7 +65,7 @@ class Attendance:
         left_inside_frame = Frame(Left_frame,relief=RIDGE, bd=2, bg="white")
         left_inside_frame.place(x=2, y=135, width=710, height=430)
 
-        #Labeland Entry
+       
 
         #attendance id 
         attendanceID_label = Label( left_inside_frame, bg="white", text="Attendance ID :", font=("times new roman", 13, "bold"))
@@ -235,19 +235,6 @@ class Attendance:
         self.var_atten_time.set("")
         self.var_atten_date.set("")
         self.var_atten_attendance.set("")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
